@@ -1,0 +1,82 @@
+.viewport {
+  /* Full-bleed regardless of the parent container's gutter, without
+     introducing a horizontal scrollbar. */
+  width: 100%;
+  overflow: hidden;
+  border-block: var(--line-width) solid var(--color-border);
+  padding-block: 0.75rem;
+  /* Isolate the animation so it never triggers layout on the page around it. */
+  contain: content;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: marquee-scroll var(--marquee-duration, 40s) linear infinite;
+}
+
+.track[data-direction='right'] {
+  animation-direction: reverse;
+}
+
+/* Pause when the reader wants to actually read it. */
+.viewport:hover .track,
+.viewport:focus-within .track {
+  animation-play-state: paused;
+}
+
+.group {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding-inline: 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-muted);
+}
+
+.divider {
+  color: var(--color-accent);
+}
+
+/* Translating by -50% of a track that is exactly two copies wide returns the
+   second copy to the first copy's starting position: no visible seam. */
+@keyframes marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+
+  /* Without motion the duplicate copy is pure noise, and the strip should
+     simply be a readable line of text. */
+  .track {
+    width: 100%;
+  }
+
+  .group:nth-child(2) {
+    display: none;
+  }
+
+  .group {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+}

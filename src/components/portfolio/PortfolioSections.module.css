@@ -1,0 +1,274 @@
+.section {
+  border-top: 1px solid var(--color-border);
+}
+
+.headingBlock {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.heading {
+  max-width: 15ch;
+  font-size: clamp(3rem, 8vw, 7.5rem);
+}
+
+.intro {
+  max-width: 58ch;
+  margin-top: 1.5rem;
+  color: var(--color-muted);
+  font-size: clamp(1rem, 1vw + .8rem, 1.3rem);
+}
+
+.researchGrid,
+.caseList,
+.archive,
+.story {
+  margin-top: clamp(3rem, 8vh, 6rem);
+}
+
+.researchGrid {
+  display: grid;
+  border-top: 1px solid var(--color-border);
+}
+
+.researchItem {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1.5rem;
+  padding-block: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.itemIndex,
+.caseNumber,
+.storyNumber {
+  color: var(--color-accent);
+  font: 500 .75rem/1 var(--font-mono);
+  letter-spacing: .12em;
+}
+
+.metaRow,
+.eyebrow,
+.archiveMeta,
+.facts dt,
+.storyMeta dt {
+  color: var(--color-muted);
+  font: 400 .7rem/1.5 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem 1rem;
+}
+
+.status {
+  color: var(--color-accent);
+}
+
+.cardTitle {
+  max-width: 30ch;
+  margin-top: 1rem;
+  font-size: clamp(1.6rem, 3vw, 2.65rem);
+  line-height: 1;
+}
+
+.description,
+.caseSummary,
+.archiveEntry p,
+.storyChapter p {
+  max-width: 68ch;
+  margin-top: 1rem;
+  color: var(--color-muted);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin-top: 1.25rem;
+}
+
+.tags li {
+  padding: .3rem .55rem;
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font: 400 .68rem/1.4 var(--font-mono);
+}
+
+.textLink {
+  display: inline-block;
+  margin-top: 1.5rem;
+  border-bottom: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  font: 500 .74rem/1.8 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.caseList {
+  border-top: 1px solid var(--color-border);
+}
+
+.caseStudy {
+  padding-block: clamp(2rem, 6vw, 4rem);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.caseHeader,
+.caseBody {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.caseHeader {
+  grid-template-columns: 3rem 1fr;
+}
+
+.caseTitle {
+  max-width: 20ch;
+  margin-top: .6rem;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+}
+
+.caseSummary {
+  font-size: 1.05rem;
+}
+
+.caseBody {
+  margin-top: 2rem;
+  padding-left: 4.5rem;
+}
+
+.facts {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+}
+
+.facts div {
+  display: grid;
+  gap: .25rem;
+}
+
+.facts dd,
+.storyMeta dd {
+  margin: 0;
+}
+
+.archive {
+  display: grid;
+  gap: 4rem;
+}
+
+.archiveGroup {
+  display: grid;
+  gap: 2rem;
+}
+
+.archiveTitle {
+  margin-top: .5rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.archiveList {
+  border-top: 1px solid var(--color-border);
+}
+
+.archiveEntry {
+  display: grid;
+  gap: 1.25rem;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.archiveEntry h4 {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.archiveMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem 1rem;
+}
+
+.archiveMeta a {
+  color: var(--color-accent);
+  font-size: 1rem;
+}
+
+.story {
+  counter-reset: chapter;
+  border-top: 1px solid var(--color-border);
+}
+
+.storyChapter {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1.5rem;
+  padding-block: clamp(2rem, 7vw, 5rem);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.storyChapter h3 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.storyMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
+  margin-top: 1.5rem;
+}
+
+.storyMeta div {
+  display: grid;
+  gap: .25rem;
+}
+
+@media (min-width: 800px) {
+  .researchGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .researchItem:nth-child(odd) {
+    padding-right: 2.5rem;
+    border-right: 1px solid var(--color-border);
+  }
+
+  .researchItem:nth-child(even) {
+    padding-left: 2.5rem;
+  }
+
+  .caseBody {
+    grid-template-columns: minmax(12rem, .65fr) 2fr;
+    gap: 4rem;
+  }
+
+  .archiveGroup {
+    grid-template-columns: minmax(14rem, .8fr) 2fr;
+    gap: 4rem;
+  }
+
+  .archiveEntry {
+    grid-template-columns: 1.3fr 1fr;
+    align-items: start;
+  }
+
+  .storyChapter {
+    grid-template-columns: 4rem 1fr;
+    padding-left: calc(25% - 4rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .caseBody {
+    padding-left: 0;
+  }
+}

@@ -1,26 +1,368 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Design tokens
+   Values are the ones committed in docs/reference-audit.md.
+   ========================================================================== */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Colour — terminal phosphor on near-black */
+  --color-background: #0a0a0a;
+  --color-surface: #121212;
+  --color-text: #ededed;
+  --color-muted: #8a8a8a;
+  --color-accent: #c6f04e;
+  --color-ambient-secondary: #355fbc;
+  --color-border: #262626;
+
+  /* Type roles */
+  --font-display: var(--font-display-face), "Times New Roman", serif;
+  --font-body: var(--font-body-face), system-ui, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Layout */
+  --container-width: 1440px;
+  --page-gutter: clamp(1.25rem, 5vw, 5rem);
+  --section-spacing: clamp(6rem, 12vh, 12rem);
+  --line-width: 1px;
+  --header-height: 4rem;
+  --prose-width: 68ch;
+
+  /* Motion */
+  --transition-fast: 150ms;
+  --transition-medium: 300ms;
+  --transition-slow: 600ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --pointer-x: 50vw;
+  --pointer-y: 20vh;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root[data-theme='light'] {
+  --color-background: #f2f2ec;
+  --color-surface: #e7e7df;
+  --color-text: #151713;
+  --color-muted: #5d6257;
+  --color-accent: #4f7000;
+  --color-ambient-secondary: #8aa9dc;
+  --color-border: #c9ccbf;
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
+@media (max-width: 1023px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --header-height: 3.5rem;
   }
 }
 
+/* Bridge the tokens into Tailwind's theme so utilities resolve to them. */
+@theme inline {
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-text: var(--color-text);
+  --color-muted: var(--color-muted);
+  --color-accent: var(--color-accent);
+  --color-border: var(--color-border);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Anchor targets must clear the fixed header. */
+  scroll-padding-top: var(--header-height);
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Nothing may scroll the page sideways. */
+  overflow-x: hidden;
+  transition:
+    color 260ms var(--ease-out),
+    background-color 260ms var(--ease-out);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      30rem circle at var(--pointer-x) var(--pointer-y),
+      color-mix(in srgb, var(--color-accent) 7%, transparent),
+      transparent 68%
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-border) 18%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      color-mix(in srgb, var(--color-border) 14%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: auto, 72px 72px, 72px 72px;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+  animation: grid-drift 24s linear infinite;
+}
+
+@keyframes grid-drift {
+  to {
+    background-position: 0, 72px 36px, 36px 72px;
+  }
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.theme-toggle {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  letter-spacing: .12em;
+  transition:
+    color 180ms var(--ease-out),
+    border-color 180ms var(--ease-out),
+    background-color 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+}
+
+.theme-toggle:hover {
+  color: var(--color-background);
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+}
+
+.theme-toggle:active {
+  transform: scale(.96);
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-background);
+}
+
+/* ==========================================================================
+   Focus — the outline is replaced, never removed.
+   ========================================================================== */
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ==========================================================================
+   Composition primitives
+   ========================================================================== */
+
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--page-gutter);
+}
+
+.section {
+  padding-block: var(--section-spacing);
+  position: relative;
+  transform: translate3d(0, var(--section-drift, 0), 0);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+.section::after {
+  content: attr(id) ' / ACTIVE MODULE';
+  position: absolute;
+  top: 2rem;
+  right: var(--page-gutter);
+  color: color-mix(in srgb, var(--color-muted) 35%, transparent);
+  font: .55rem/1 var(--font-mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+}
+
+.section h2[data-decrypting='true'] {
+  position: relative;
+  color: var(--color-accent);
+  text-shadow: 0 0 1.25rem color-mix(in srgb, var(--color-accent) 24%, transparent);
+}
+
+.section h2[data-decrypting='true']::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: .14em;
+  background: var(--color-accent);
+  box-shadow: 0 0 1rem var(--color-accent);
+  animation: decrypt-scan .42s steps(5, end) infinite alternate;
+}
+
+@keyframes decrypt-scan {
+  from { transform: translateX(0); opacity: .35; }
+  to { transform: translateX(62vw); opacity: 1; }
+}
+
+.section article {
+  transition:
+    filter var(--transition-medium) var(--ease-out),
+    border-color var(--transition-medium) var(--ease-out);
+}
+
+.section article:hover {
+  filter: brightness(1.12);
+}
+
+.rule {
+  height: var(--line-width);
+  background-color: var(--color-border);
+  border: 0;
+  margin: 0;
+}
+
+/* Monospace interface chrome: nav items, labels, counters, metadata. */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.prose {
+  max-width: var(--prose-width);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link: off-screen until focused. */
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 200;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-accent);
+  color: var(--color-background);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: translateY(-200%);
+  transition: transform var(--transition-fast) var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Motion preferences
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  body::before {
+    animation: none;
+  }
+
+  .section {
+    transform: none;
+  }
+
+  .section h2[data-decrypting='true']::after {
+    display: none;
+  }
 }

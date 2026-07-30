@@ -1,0 +1,243 @@
+.about {
+  border-top: var(--line-width) solid var(--color-border);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  color: var(--color-muted);
+}
+
+.greeting {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.prompt {
+  color: var(--color-accent);
+}
+
+.heading {
+  margin: 0 0 clamp(2.5rem, 6vh, 4rem);
+  max-width: 24ch;
+  font-size: clamp(2rem, 1.35rem + 3.6vw, 4.75rem);
+}
+
+.grid {
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    gap: 4rem;
+  }
+}
+
+.subheading {
+  margin: 0 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: var(--line-width) solid var(--color-border);
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.miniLabel {
+  margin: 1.5rem 0 0.75rem;
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.bio {
+  min-width: 0;
+}
+
+.quote {
+  margin: 2rem 0 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--color-accent);
+}
+
+.quote p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 1.1rem + 1.2vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.side,
+.stack,
+.timeline {
+  min-width: 0;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.block {
+  min-width: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+}
+
+.stat {
+  min-width: 0;
+}
+
+.statValue {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.4rem + 1.6vw, 2.75rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.plainList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.row + .row {
+  border-top: var(--line-width) solid var(--color-border);
+}
+
+.rowMeta {
+  color: var(--color-muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.stack {
+  margin-top: clamp(3rem, 8vh, 5rem);
+}
+
+.stackGrid {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 640px) {
+  .stackGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .stackGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem 3rem;
+  }
+}
+
+.stackGroup {
+  min-width: 0;
+}
+
+.stackTitle {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tag {
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  border: var(--line-width) solid var(--color-border);
+  /* Long tokens must wrap rather than push the grid wide at 360px. */
+  overflow-wrap: anywhere;
+}
+
+.timeline {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: clamp(3rem, 8vh, 5rem);
+}
+
+@media (min-width: 1024px) {
+  .timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem;
+  }
+}
+
+.entry + .entry {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: var(--line-width) solid var(--color-border);
+}
+
+.entryRole {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.entryOrg,
+.entryPeriod {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.entrySummary {
+  margin: 0.75rem 0 0;
+  font-size: 0.92rem;
+  color: var(--color-muted);
+}

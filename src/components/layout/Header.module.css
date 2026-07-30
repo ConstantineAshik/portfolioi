@@ -1,0 +1,354 @@
+.header {
+  position: relative;
+  inset-inline: auto;
+  top: auto;
+  z-index: 100;
+  max-width: none;
+  width: 100%;
+  min-height: var(--header-height);
+  height: auto;
+  margin-inline: 0;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent 22%), color-mix(in srgb, var(--color-background) 78%, transparent);
+  backdrop-filter: blur(18px) saturate(130%);
+  border: 1px solid color-mix(in srgb, var(--color-border) 85%, transparent);
+  clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 1rem, 100% 100%, 1rem 100%, 0 calc(100% - 1rem));
+  box-shadow: inset 0 1px color-mix(in srgb, white 6%, transparent), 0 1rem 4rem color-mix(in srgb, black 35%, transparent);
+  transition:
+    border-color var(--transition-medium) var(--ease-out),
+    background-color var(--transition-medium) var(--ease-out),
+    translate var(--transition-medium) var(--ease-out);
+}
+
+/* The rule only appears once the hero has scrolled past, so the landing
+   view reads as one uninterrupted plane. */
+.header[data-scrolled='true'] {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-background) 90%, transparent);
+}
+
+.header[data-docked='true'] {
+  position: fixed;
+  inset-inline: var(--page-gutter);
+  top: .75rem;
+  width: auto;
+  max-width: calc(var(--container-width) - (var(--page-gutter) * 2));
+  margin-inline: auto;
+  animation: dock-enter .45s var(--ease-out) both;
+}
+
+@keyframes dock-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem) scale(.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  min-height: var(--header-height);
+  padding: .45rem 1rem;
+}
+
+.progressTrack {
+  position: absolute;
+  inset-inline: 1rem;
+  bottom: 0;
+  height: 1px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-border) 55%, transparent);
+}
+
+.progressTrack span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--color-accent);
+  box-shadow: 0 0 .75rem var(--color-accent);
+  transform: scaleX(var(--scroll-progress, 0));
+  transform-origin: left;
+}
+
+.scanBeam {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  width: 6rem;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 12%, transparent), transparent);
+  animation: nav-scan 7s linear infinite;
+}
+
+@keyframes nav-scan {
+  from { transform: translateX(-7rem); }
+  to { transform: translateX(calc(100vw - 2 * var(--page-gutter))); }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.brandPrompt {
+  color: var(--color-accent);
+}
+
+.brand:hover .brandName {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+/* Blinking block caret, the one ornament borrowed from a real terminal. */
+.caret {
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  translate: 0 0.1em;
+  background-color: var(--color-accent);
+  animation: caret-blink 1.2s steps(1, end) infinite;
+}
+
+@keyframes caret-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.desktopNav {
+  display: none;
+  position: relative;
+}
+
+.navEyebrow {
+  position: absolute;
+  top: -.9rem;
+  right: .15rem;
+  color: color-mix(in srgb, var(--color-accent) 70%, transparent);
+  font: .46rem/1 var(--font-mono);
+  letter-spacing: .18em;
+}
+
+@media (min-width: 1280px) {
+  .desktopNav {
+    display: block;
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .brand {
+    width: 2.75rem;
+    overflow: hidden;
+  }
+
+  .brandName,
+  .caret,
+  .navIndex {
+    display: none;
+  }
+
+  .navLink {
+    padding-inline: .52rem;
+    font-size: .63rem;
+    letter-spacing: .1em;
+  }
+
+  .navEyebrow {
+    display: none;
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1399px) {
+  .externalItem:first-of-type {
+    display: none;
+  }
+
+  .resumeLink {
+    padding-inline: .7rem;
+  }
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: .2rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 52%, transparent);
+  clip-path: polygon(.5rem 0, 100% 0, 100% calc(100% - .5rem), calc(100% - .5rem) 100%, 0 100%, 0 .5rem);
+}
+
+.navLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.2rem;
+  padding: .5rem .62rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: color var(--transition-fast) var(--ease-out), background-color var(--transition-fast) var(--ease-out), transform var(--transition-fast) var(--ease-out);
+}
+
+.navLink:hover {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  transform: translateY(-2px);
+}
+
+.navLink:hover .navLabel {
+  animation: nav-signal .24s steps(2, end) 2;
+}
+
+@keyframes nav-signal {
+  0% { translate: 0; text-shadow: none; }
+  33% { translate: -.12rem 0; text-shadow: .1rem 0 var(--color-accent); }
+  66% { translate: .12rem 0; text-shadow: -.1rem 0 color-mix(in srgb, var(--color-text) 55%, transparent); }
+  100% { translate: 0; text-shadow: none; }
+}
+
+.externalItem {
+  margin-left: 0.15rem;
+}
+
+.externalItem + .externalItem {
+  margin-left: 0;
+}
+
+.resumeLink {
+  flex-shrink: 0;
+  white-space: nowrap;
+  color: var(--color-background);
+  background-color: var(--color-accent);
+  clip-path: polygon(.45rem 0, 100% 0, 100% calc(100% - .45rem), calc(100% - .45rem) 100%, 0 100%, 0 .45rem);
+}
+
+.resumeLink:hover {
+  color: var(--color-background);
+  background-color: var(--color-text);
+}
+
+.navIndex {
+  font-size: 0.62rem;
+  color: color-mix(in srgb, var(--color-muted) 70%, transparent);
+  transition: color var(--transition-fast) var(--ease-out);
+}
+
+/* Active state is carried by colour *and* the bracket glyphs, so the
+   information never depends on colour alone. */
+.navLink[aria-current='true'] {
+  color: var(--color-background);
+  background: var(--color-accent);
+  box-shadow: 0 0 1.6rem color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.navLink[aria-current='true'] .navIndex {
+  color: color-mix(in srgb, var(--color-background) 70%, transparent);
+}
+
+.navLink[aria-current='true'] .navLabel::before {
+  content: '[';
+  margin-right: 0.15em;
+}
+
+.navLink[aria-current='true'] .navLabel::after {
+  content: ']';
+  margin-left: 0.15em;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: none;
+  border: var(--line-width) solid var(--color-border);
+  cursor: pointer;
+  transition: border-color var(--transition-fast) var(--ease-out);
+}
+
+.menuButton:hover {
+  border-color: var(--color-muted);
+}
+
+@media (min-width: 1280px) {
+  .menuButton {
+    display: none;
+  }
+}
+
+@media (max-width: 1279px) {
+  .header {
+    inset-inline: auto;
+    top: auto;
+  }
+
+  .header[data-docked='true'] {
+    inset-inline: .75rem;
+    top: .5rem;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanBeam {
+    display: none;
+    animation: none;
+  }
+
+  .navLink:hover .navLabel {
+    animation: none;
+  }
+
+  .header[data-docked='true'] {
+    animation: none;
+  }
+}
