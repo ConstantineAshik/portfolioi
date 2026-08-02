@@ -18,10 +18,16 @@ import type {
  * src/content/en.json instead.
  */
 
+const vercelHost =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
 const configuredSiteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ?? process.env.RENDER_EXTERNAL_URL;
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.RENDER_EXTERNAL_URL ??
+  (vercelHost ? `https://${vercelHost}` : undefined);
 if (process.env.NODE_ENV === 'production' && !configuredSiteUrl) {
-  throw new Error('NEXT_PUBLIC_SITE_URL is required in production');
+  throw new Error(
+    'A canonical site URL is required in production. Set NEXT_PUBLIC_SITE_URL outside Render or Vercel.',
+  );
 }
 export const siteUrl = new URL(configuredSiteUrl ?? 'http://localhost:3000').origin;
 
