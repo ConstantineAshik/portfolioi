@@ -34,7 +34,7 @@
   width: auto;
   max-width: calc(var(--container-width) - (var(--page-gutter) * 2));
   margin-inline: auto;
-  animation: dock-enter .45s var(--ease-out) both;
+  animation: dock-enter .5s var(--ease-out) both;
   will-change: transform, opacity;
 }
 

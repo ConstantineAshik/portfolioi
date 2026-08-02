@@ -40,8 +40,7 @@ export function Header() {
     let wasScrolled = false;
     let wasDocked = false;
 
-    function onScroll(event: Event) {
-      const scrollY = (event as CustomEvent<{ scrollY: number }>).detail.scrollY;
+    function updateState(scrollY: number) {
       const nextScrolled = scrollY > 24;
       const nextDocked = scrollY > anchorTop.current - 12;
       if (nextScrolled !== wasScrolled) {
@@ -54,12 +53,27 @@ export function Header() {
       }
     }
 
-    const anchor = document.querySelector<HTMLElement>('[data-nav-anchor]');
-    anchorTop.current = anchor
-      ? anchor.getBoundingClientRect().top + window.scrollY
-      : 0;
+    function measureAnchor() {
+      const anchor = document.querySelector<HTMLElement>('[data-nav-anchor]');
+      anchorTop.current = anchor
+        ? anchor.getBoundingClientRect().top + window.scrollY
+        : 0;
+      updateState(window.scrollY);
+    }
+
+    function onScroll(event: Event) {
+      updateState((event as CustomEvent<{ scrollY: number }>).detail.scrollY);
+    }
+
+    measureAnchor();
     window.addEventListener(SCROLL_EVENT, onScroll);
-    return () => window.removeEventListener(SCROLL_EVENT, onScroll);
+    window.addEventListener('resize', measureAnchor, { passive: true });
+    void document.fonts?.ready.then(measureAnchor);
+
+    return () => {
+      window.removeEventListener(SCROLL_EVENT, onScroll);
+      window.removeEventListener('resize', measureAnchor);
+    };
   }, []);
 
   useEffect(() => {

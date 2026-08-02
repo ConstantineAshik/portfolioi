@@ -54,7 +54,13 @@ export function HeroEntrance() {
         // actions, then the marquee + scroll hint.
         timeline.from(
           lines.slice(1),
-          { autoAlpha: 0, y: 18, duration: 0.6, stagger: 0.09 },
+          {
+            autoAlpha: 0,
+            y: 18,
+            duration: 0.6,
+            stagger: 0.09,
+            clearProps: 'transform,opacity,visibility',
+          },
           '-=0.45',
         );
       }, section);
