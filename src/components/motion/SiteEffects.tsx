@@ -10,6 +10,9 @@ export function SiteEffects() {
     const progressBar = document.querySelector<HTMLElement>('[data-scroll-progress]');
     root.dataset.hydrated = 'true';
     let scrollDirty = true;
+    let pointerDirty = false;
+    let pointerX = window.innerWidth / 2;
+    let pointerY = window.innerHeight * 0.2;
     let frame = 0;
     let cancelled = false;
     let animationCleanup: (() => void) | undefined;
@@ -24,6 +27,11 @@ export function SiteEffects() {
         if (progressBar) progressBar.style.transform = `scaleX(${progress})`;
         window.dispatchEvent(new CustomEvent(SCROLL_EVENT, { detail: { scrollY } }));
       }
+      if (pointerDirty) {
+        pointerDirty = false;
+        root.style.setProperty('--pointer-x', `${pointerX}px`);
+        root.style.setProperty('--pointer-y', `${pointerY}px`);
+      }
     };
 
     const schedule = () => {
@@ -33,8 +41,15 @@ export function SiteEffects() {
       scrollDirty = true;
       schedule();
     };
+    const onPointerMove = (event: PointerEvent) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      pointerDirty = true;
+      schedule();
+    };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
     schedule();
 
     void Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(
@@ -164,7 +179,10 @@ export function SiteEffects() {
       cancelled = true;
       if (frame) cancelAnimationFrame(frame);
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('pointermove', onPointerMove);
       animationCleanup?.();
+      root.style.removeProperty('--pointer-x');
+      root.style.removeProperty('--pointer-y');
       delete root.dataset.hydrated;
     };
   }, []);

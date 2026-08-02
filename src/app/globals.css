@@ -142,6 +142,42 @@ body::before {
   transform: translateZ(0);
 }
 
+/* Desktop pointer phosphor: one restrained ambient light, never interactive. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 44rem;
+    height: 44rem;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-accent) 10%, transparent),
+      color-mix(in srgb, var(--color-accent) 3%, transparent) 38%,
+      transparent 72%
+    );
+    transform: translate3d(
+      calc(var(--pointer-x) - 50%),
+      calc(var(--pointer-y) - 50%),
+      0
+    );
+    transition: opacity 300ms var(--ease-out);
+    will-change: transform, opacity;
+  }
+
+  :root[data-hydrated='true'] body::after {
+    opacity: 1;
+  }
+
+  :root[data-theme='light'] body::after {
+    opacity: .58;
+  }
+}
+
 h1,
 h2,
 h3,
