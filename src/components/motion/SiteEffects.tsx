@@ -7,10 +7,8 @@ export const SCROLL_EVENT = 'portfolio-scroll';
 export function SiteEffects() {
   useEffect(() => {
     const root = document.documentElement;
+    const progressBar = document.querySelector<HTMLElement>('[data-scroll-progress]');
     root.dataset.hydrated = 'true';
-    let pointerX = window.innerWidth / 2;
-    let pointerY = window.innerHeight * 0.2;
-    let pointerDirty = true;
     let scrollDirty = true;
     let frame = 0;
     let cancelled = false;
@@ -18,19 +16,12 @@ export function SiteEffects() {
 
     const flush = () => {
       frame = 0;
-      if (pointerDirty) {
-        pointerDirty = false;
-        root.style.setProperty('--pointer-x', `${pointerX}px`);
-        root.style.setProperty('--pointer-y', `${pointerY}px`);
-      }
       if (scrollDirty) {
         scrollDirty = false;
         const scrollY = window.scrollY;
         const available = root.scrollHeight - window.innerHeight;
-        root.style.setProperty(
-          '--scroll-progress',
-          String(available > 0 ? scrollY / available : 0),
-        );
+        const progress = available > 0 ? scrollY / available : 0;
+        if (progressBar) progressBar.style.transform = `scaleX(${progress})`;
         window.dispatchEvent(new CustomEvent(SCROLL_EVENT, { detail: { scrollY } }));
       }
     };
@@ -38,18 +29,11 @@ export function SiteEffects() {
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(flush);
     };
-    const onPointerMove = (event: PointerEvent) => {
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-      pointerDirty = true;
-      schedule();
-    };
     const onScroll = () => {
       scrollDirty = true;
       schedule();
     };
 
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true });
     schedule();
 
@@ -145,12 +129,6 @@ export function SiteEffects() {
               });
 
               if (media.conditions.desktop) {
-                gsap.to('[data-photo-orbit]', {
-                  rotation: 360,
-                  duration: 30,
-                  ease: 'none',
-                  repeat: -1,
-                });
                 void import('lenis').then(({ default: Lenis }) => {
                   if (cancelled) return;
                   const lenis = new Lenis({
@@ -158,13 +136,10 @@ export function SiteEffects() {
                     smoothWheel: true,
                     wheelMultiplier: 1,
                     anchors: true,
+                    autoRaf: true,
                   });
                   lenis.on('scroll', ScrollTrigger.update);
-                  const update = (time: number) => lenis.raf(time * 1000);
-                  gsap.ticker.add(update);
-                  gsap.ticker.lagSmoothing(1000, 16);
                   lenisCleanup = () => {
-                    gsap.ticker.remove(update);
                     lenis.destroy();
                   };
                 });
@@ -188,7 +163,6 @@ export function SiteEffects() {
     return () => {
       cancelled = true;
       if (frame) cancelAnimationFrame(frame);
-      window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('scroll', onScroll);
       animationCleanup?.();
       delete root.dataset.hydrated;

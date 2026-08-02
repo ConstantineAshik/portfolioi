@@ -23,7 +23,6 @@
   pointer-events: none;
   border-radius: 42% 58% 63% 37% / 48% 35% 65% 52%;
   filter: blur(clamp(4rem, 9vw, 8rem));
-  will-change: transform;
 }
 
 .hero::before {
@@ -33,7 +32,7 @@
   top: 24%;
   background: color-mix(in srgb, var(--color-accent) 22%, transparent);
   opacity: .52;
-  animation: ambient-lime 18s ease-in-out infinite alternate;
+  transform: translate3d(4%, -2%, 0) rotate(2deg);
 }
 
 .hero::after {
@@ -43,17 +42,7 @@
   top: 4%;
   background: color-mix(in srgb, var(--color-ambient-secondary) 34%, transparent);
   opacity: .48;
-  animation: ambient-blue 22s ease-in-out infinite alternate;
-}
-
-@keyframes ambient-lime {
-  from { transform: translate3d(-4%, 3%, 0) rotate(-8deg) scale(.94); }
-  to { transform: translate3d(12%, -7%, 0) rotate(10deg) scale(1.08); }
-}
-
-@keyframes ambient-blue {
-  from { transform: translate3d(4%, -4%, 0) rotate(8deg) scale(1.04); }
-  to { transform: translate3d(-13%, 10%, 0) rotate(-12deg) scale(.92); }
+  transform: translate3d(-3%, 3%, 0) rotate(-2deg);
 }
 
 .inner {
@@ -224,7 +213,6 @@
   font: 600 .62rem/1 var(--font-mono);
   animation: logo-counter-orbit 24s linear infinite, logo-float 3s ease-in-out infinite;
   animation-delay: 0s, var(--float-delay, 0s);
-  backdrop-filter: blur(8px);
   clip-path: polygon(.35rem 0, 100% 0, 100% calc(100% - .35rem), calc(100% - .35rem) 100%, 0 100%, 0 .35rem);
 }
 

@@ -37,10 +37,21 @@ export function Header() {
   useScrollLock(isMenuOpen);
 
   useEffect(() => {
+    let wasScrolled = false;
+    let wasDocked = false;
+
     function onScroll(event: Event) {
       const scrollY = (event as CustomEvent<{ scrollY: number }>).detail.scrollY;
-      setScrolled(scrollY > 24);
-      setDocked(scrollY > anchorTop.current - 12);
+      const nextScrolled = scrollY > 24;
+      const nextDocked = scrollY > anchorTop.current - 12;
+      if (nextScrolled !== wasScrolled) {
+        wasScrolled = nextScrolled;
+        setScrolled(nextScrolled);
+      }
+      if (nextDocked !== wasDocked) {
+        wasDocked = nextDocked;
+        setDocked(nextDocked);
+      }
     }
 
     const anchor = document.querySelector<HTMLElement>('[data-nav-anchor]');
@@ -68,7 +79,7 @@ export function Header() {
         data-docked={isDocked}
       >
         <div className={styles.progressTrack} aria-hidden="true">
-          <span />
+          <span data-scroll-progress />
         </div>
         <div className={`container ${styles.inner}`}>
           <a href="#hero" className={styles.brand}>

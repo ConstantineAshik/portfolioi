@@ -110,7 +110,7 @@ body::before {
   pointer-events: none;
   background:
     radial-gradient(
-      30rem circle at var(--pointer-x) var(--pointer-y),
+      30rem circle at 50% 18%,
       color-mix(in srgb, var(--color-accent) 7%, transparent),
       transparent 68%
     ),
@@ -125,13 +125,7 @@ body::before {
     );
   background-size: auto, 72px 72px, 72px 72px;
   mask-image: linear-gradient(to bottom, black, transparent 78%);
-  animation: grid-drift 24s linear infinite;
-}
-
-@keyframes grid-drift {
-  to {
-    background-position: 0, 72px 36px, 36px 72px;
-  }
+  transform: translateZ(0);
 }
 
 h1,
