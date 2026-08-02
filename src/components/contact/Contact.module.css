@@ -36,6 +36,13 @@
   border: var(--line-width) solid var(--color-border);
 }
 
+:global(:root[data-theme='light']) .terminal {
+  border-color: transparent;
+  border-radius: 1.25rem;
+  box-shadow: var(--clay-raised);
+  overflow: hidden;
+}
+
 .titleBar {
   display: flex;
   align-items: center;

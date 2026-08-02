@@ -49,8 +49,6 @@ export const identity = {
   ],
   location: 'Dhaka, Bangladesh',
   timezone: 'UTC+6',
-  availability: 'Open to software engineering roles',
-  availabilityStatus: 'available' as const,
   yearsOfExperience: '01',
   projectCount: '08',
   email: 'ashik3232himu@gmail.com',

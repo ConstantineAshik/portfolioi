@@ -1,13 +1,11 @@
 import { getTranslations } from 'next-intl/server';
 
-import { footer, identity, socialLinks } from '@/config/portfolio';
+import { footer, socialLinks } from '@/config/portfolio';
 
 import styles from './Footer.module.css';
 
 export async function Footer() {
   const t = await getTranslations('footer');
-  // Read at render time rather than module scope so a long-lived build does
-  // not serve a stale year.
   const year = new Date().getFullYear();
 
   return (
@@ -42,21 +40,6 @@ export async function Footer() {
               </li>
             ))}
           </ul>
-        </div>
-
-        <div className={styles.column}>
-          <h2 className={`mono-label ${styles.heading}`}>{t('statusLabel')}</h2>
-          <p className={styles.status}>
-            <span className={styles.dot} aria-hidden="true" />
-            {identity.availability}
-          </p>
-          <p className={styles.note}>
-            {identity.location} — {identity.timezone}
-          </p>
-          <a className={styles.top} href="#hero">
-            {t('backToTop')}
-            <span aria-hidden="true"> ↑</span>
-          </a>
         </div>
       </div>
     </footer>

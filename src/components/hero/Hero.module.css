@@ -333,18 +333,90 @@
 }
 
 @media (max-width: 767px) {
+  .hero {
+    gap: 2.25rem;
+    padding-top: 1.5rem;
+  }
+
+  .inner,
+  .heroGrid,
+  .details {
+    width: 100%;
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .inner {
+    margin-inline: auto;
+  }
+
+  .heroGrid > *,
+  .details > * {
+    justify-self: center;
+  }
+
+  .meta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .metaDivider {
+    flex: 0 1 3rem;
+  }
+
+  .title {
+    width: 100%;
+    font-size: clamp(3rem, 16vw, 5rem);
+    text-align: center;
+  }
+
+  .titleLine,
+  .titleInner {
+    width: 100%;
+  }
+
   .portal {
-    width: min(80vw, 18rem);
-    margin-top: .5rem;
+    width: min(76vw, 19rem);
+    margin: .75rem auto 0;
+    justify-self: center;
   }
 
   .portraitColumn {
+    width: 100%;
+    margin-inline: auto;
     justify-self: center;
+  }
+
+  .portraitIntro {
+    margin-inline: auto;
   }
 
   .techLogo {
     --logo-size: 1.8rem;
     font-size: .52rem;
+  }
+
+  .details,
+  .role,
+  .based {
+    width: 100%;
+  }
+
+  .actions {
+    width: min(100%, 23rem);
+    margin-inline: auto;
+    justify-content: center;
+  }
+
+  .cta,
+  .secondary {
+    flex: 1 1 9rem;
+    justify-content: center;
+  }
+
+  .scrollRow {
+    justify-content: center;
   }
 }
 
@@ -435,6 +507,35 @@
 
 .secondary:hover {
   border-color: var(--color-muted);
+}
+
+:global(:root[data-theme='light']) .portal {
+  border-radius: 50%;
+  filter: none;
+  box-shadow: 14px 14px 30px #c1cabf, -14px -14px 30px #ffffff;
+}
+
+:global(:root[data-theme='light']) .techLogo {
+  border-color: color-mix(in srgb, currentColor 28%, transparent);
+  background: var(--color-surface);
+  box-shadow: var(--clay-small);
+}
+
+:global(:root[data-theme='light']) .cta,
+:global(:root[data-theme='light']) .secondary {
+  border-color: transparent;
+  border-radius: .8rem;
+  box-shadow: var(--clay-small);
+}
+
+:global(:root[data-theme='light']) .secondary {
+  background: var(--color-surface);
+}
+
+:global(:root[data-theme='light']) .cta:active,
+:global(:root[data-theme='light']) .secondary:active {
+  transform: translateY(1px);
+  box-shadow: var(--clay-inset);
 }
 
 .bottom {

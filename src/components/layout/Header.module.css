@@ -338,6 +338,25 @@
   }
 }
 
+:global(:root[data-theme='light']) .header {
+  border-color: color-mix(in srgb, white 65%, var(--color-border));
+  border-radius: 1rem;
+  clip-path: none;
+  background: color-mix(in srgb, var(--color-surface) 96%, white);
+  box-shadow: var(--clay-raised);
+}
+
+:global(:root[data-theme='light']) .menuButton {
+  border-color: transparent;
+  border-radius: .75rem;
+  background: var(--color-surface);
+  box-shadow: var(--clay-small);
+}
+
+:global(:root[data-theme='light']) .menuButton:active {
+  box-shadow: var(--clay-inset);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scanBeam {
     display: none;

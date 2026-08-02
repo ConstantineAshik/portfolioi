@@ -77,10 +77,6 @@ export async function Contact() {
               </p>
             </div>
 
-            <div className={styles.block}>
-              <h3 className={`mono-label ${styles.sideLabel}`}>{t('availabilityLabel')}</h3>
-              <p className={styles.sideValue}>{identity.availability}</p>
-            </div>
           </aside>
         </div>
       </div>

@@ -149,16 +149,30 @@ export function Header() {
         <span className={styles.scanBeam} aria-hidden="true" />
       </header>
 
-      {portalRoot ? createPortal(<div
+      {portalRoot && isMenuOpen ? createPortal(<div
         id="mobile-menu"
         ref={menuRef}
         className={menuStyles.overlay}
-        hidden={!isMenuOpen}
         role="dialog"
         aria-modal="true"
         aria-label={t('menuLabel')}
         tabIndex={-1}
       >
+        <div className={menuStyles.topBar}>
+          <span className={menuStyles.menuCode} aria-hidden="true">
+            MENU.SYS
+          </span>
+          <button
+            type="button"
+            className={menuStyles.closeButton}
+            aria-label={t('closeMenu')}
+            onClick={closeMenu}
+          >
+            <span>{t('closeMenu')}</span>
+            <span className={menuStyles.closeIcon} aria-hidden="true">×</span>
+          </button>
+        </div>
+
         <nav className={menuStyles.nav} aria-label={t('menuLabel')}>
           <ul className={menuStyles.list}>
             {navigationItems.map((item) => (

@@ -144,8 +144,7 @@
     "statusError": "ERROR",
     "directLabel": "Direct",
     "elsewhereLabel": "Elsewhere",
-    "locationLabel": "Location",
-    "availabilityLabel": "Availability"
+    "locationLabel": "Location"
   },
   "validation": {
     "nameRequired": "Please enter your name.",
@@ -163,11 +162,7 @@
     "errorSummary": "There is a problem with the form."
   },
   "footer": {
-    "navLabel": "Footer navigation",
-    "backToTop": "Back to top",
-    "builtWith": "Built with",
     "socialLabel": "Elsewhere",
-    "statusLabel": "Status",
     "signOff": "Thanks for scrolling this far."
   },
   "loading": {
