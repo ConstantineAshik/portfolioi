@@ -277,3 +277,49 @@
     padding-left: 0;
   }
 }
+
+:global(:root[data-theme='light']) .researchGrid,
+:global(:root[data-theme='light']) .caseList,
+:global(:root[data-theme='light']) .archiveList {
+  border-top: 0;
+}
+
+:global(:root[data-theme='light']) .researchGrid,
+:global(:root[data-theme='light']) .caseList {
+  display: grid;
+  gap: clamp(1.25rem, 3vw, 2rem);
+}
+
+:global(:root[data-theme='light']) .researchItem,
+:global(:root[data-theme='light']) .caseStudy,
+:global(:root[data-theme='light']) .archiveGroup {
+  border: 1px solid color-mix(in srgb, white 62%, var(--color-border));
+  border-radius: 1.35rem;
+  background: var(--color-surface);
+  box-shadow: var(--clay-raised);
+}
+
+:global(:root[data-theme='light']) .researchItem,
+:global(:root[data-theme='light']) .caseStudy {
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+}
+
+:global(:root[data-theme='light']) .researchItem:nth-child(odd),
+:global(:root[data-theme='light']) .researchItem:nth-child(even) {
+  border: 1px solid color-mix(in srgb, white 62%, var(--color-border));
+}
+
+:global(:root[data-theme='light']) .archiveGroup {
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+:global(:root[data-theme='light']) .archiveEntry:last-child {
+  border-bottom: 0;
+}
+
+:global(:root[data-theme='light']) .tags li {
+  border-color: transparent;
+  border-radius: .55rem;
+  background: var(--color-background);
+  box-shadow: var(--clay-small);
+}

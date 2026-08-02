@@ -156,3 +156,11 @@
 .sideMuted {
   color: var(--color-muted);
 }
+
+:global(:root[data-theme='light']) .side .block {
+  padding: 1.15rem;
+  border: 1px solid color-mix(in srgb, white 62%, var(--color-border));
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: var(--clay-small);
+}

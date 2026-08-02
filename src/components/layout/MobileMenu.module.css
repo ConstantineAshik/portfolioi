@@ -72,6 +72,24 @@
   box-shadow: var(--clay-small);
 }
 
+:global(:root[data-theme='light']) .overlay,
+:global(:root[data-theme='light']) .topBar {
+  background: var(--color-background);
+}
+
+:global(:root[data-theme='light']) .item {
+  margin-block: .7rem;
+  padding-inline: 1rem;
+  border: 1px solid color-mix(in srgb, white 62%, var(--color-border));
+  border-radius: 1rem;
+  background: var(--color-surface);
+  box-shadow: var(--clay-small);
+}
+
+:global(:root[data-theme='light']) .item + .item {
+  border-top: 1px solid color-mix(in srgb, white 62%, var(--color-border));
+}
+
 .nav {
   margin-top: 1.25rem;
 }

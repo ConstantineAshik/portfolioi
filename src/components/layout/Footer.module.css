@@ -86,3 +86,16 @@
   color: var(--color-muted);
   overflow-wrap: anywhere;
 }
+
+:global(:root[data-theme='light']) .footer {
+  border-top-color: transparent;
+  background: var(--color-surface);
+  box-shadow: inset 0 10px 24px #c5cdc2, inset 0 -8px 20px #ffffff;
+}
+
+:global(:root[data-theme='light']) .column {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  border-radius: 1rem;
+  background: var(--color-background);
+  box-shadow: var(--clay-small);
+}

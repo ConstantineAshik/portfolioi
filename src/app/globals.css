@@ -206,14 +206,34 @@ a {
 }
 
 :root[data-theme='light'] .theme-toggle {
+  color: var(--color-muted);
   border-color: transparent;
   border-radius: .75rem;
   background: var(--color-surface);
   box-shadow: var(--clay-small);
 }
 
+:root[data-theme='light'] .theme-toggle:hover {
+  color: var(--color-muted);
+  border-color: transparent;
+  background: var(--color-surface);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :root[data-theme='light'] .theme-toggle:hover {
+    color: #f7faef;
+    background: var(--color-accent);
+  }
+}
+
 :root[data-theme='light'] .theme-toggle:active {
+  color: var(--color-text);
+  background: var(--color-surface);
   box-shadow: var(--clay-inset);
+}
+
+:root[data-theme='light'] body::before {
+  opacity: .55;
 }
 
 img,
