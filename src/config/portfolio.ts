@@ -24,7 +24,11 @@ const configuredSiteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
   process.env.RENDER_EXTERNAL_URL ??
   (vercelHost ? `https://${vercelHost}` : undefined);
-if (process.env.NODE_ENV === 'production' && !configuredSiteUrl) {
+if (
+  typeof window === 'undefined' &&
+  process.env.NODE_ENV === 'production' &&
+  !configuredSiteUrl
+) {
   throw new Error(
     'A canonical site URL is required in production. Set NEXT_PUBLIC_SITE_URL outside Render or Vercel.',
   );
