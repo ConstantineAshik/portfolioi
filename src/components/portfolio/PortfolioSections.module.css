@@ -84,6 +84,11 @@
   color: var(--color-muted);
 }
 
+.roleHighlight {
+  color: var(--color-accent);
+  font-weight: 650;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;

@@ -35,7 +35,15 @@ export async function PortfolioSections() {
                     <span className={styles.status}>{item.status}</span>
                   </div>
                   <h3 className={styles.cardTitle}>{item.title}</h3>
-                  <p className={styles.description}>{item.description}</p>
+                  <p className={styles.description}>
+                    {item.id === 'robofest' ? (
+                      <>
+                        {item.description.split('General Secretary')[0]}
+                        <strong className={styles.roleHighlight}>General Secretary</strong>
+                        {item.description.split('General Secretary')[1]}
+                      </>
+                    ) : item.description}
+                  </p>
                   <ul className={styles.tags} aria-label="Technologies">
                     {item.tags.map((tag) => <li key={tag}>{tag}</li>)}
                   </ul>

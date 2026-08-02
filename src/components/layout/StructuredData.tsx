@@ -1,12 +1,7 @@
 import { caseStudies, identity, siteUrl, socialLinks } from '@/config/portfolio';
 
-/**
- * Person + CreativeWork JSON-LD.
- *
- * Emitted server-side so crawlers see it without executing scripts. The values
- * come from the same config object the visible page renders, so the structured
- * data cannot drift from the content.
- */
+import { JsonLd } from './JsonLd';
+
 export function StructuredData({ locale }: { locale: string }) {
   const person = {
     '@context': 'https://schema.org',
@@ -23,7 +18,7 @@ export function StructuredData({ locale }: { locale: string }) {
     sameAs: socialLinks
       .filter((link) => link.href.startsWith('http'))
       .map((link) => link.href),
-    knowsLanguage: ['bn', 'en'],
+    knowsLanguage: ['en'],
   };
 
   const works = caseStudies.map((project) => ({
@@ -37,21 +32,7 @@ export function StructuredData({ locale }: { locale: string }) {
     creator: { '@type': 'Person', name: identity.fullName },
     keywords: project.stack.join(', '),
     url: project.externalUrl ?? `${siteUrl}/${locale}#work`,
-    image: {
-      '@type': 'ImageObject',
-      url: `${siteUrl}${project.cover.src}`,
-      width: project.cover.width,
-      height: project.cover.height,
-      caption: project.cover.alt,
-    },
   }));
 
-  return (
-    <script
-      type="application/ld+json"
-      // Static, developer-authored data from a typed config — no user input
-      // reaches this string.
-      dangerouslySetInnerHTML={{ __html: JSON.stringify([person, ...works]) }}
-    />
-  );
+  return <JsonLd data={JSON.stringify([person, ...works])} />;
 }

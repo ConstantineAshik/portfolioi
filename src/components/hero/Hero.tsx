@@ -1,7 +1,5 @@
 import { getTranslations } from 'next-intl/server';
 import Image from 'next/image';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
 
 import { identity } from '@/config/portfolio';
 
@@ -13,7 +11,6 @@ import { Marquee } from '../motion/Marquee';
 export async function Hero() {
   const t = await getTranslations('hero');
   const photo = await getTranslations('photo');
-  const hasPhoto = existsSync(join(process.cwd(), 'public', 'profile.jpg'));
 
   const marqueeItems = t('marquee')
     .split('·')
@@ -80,25 +77,18 @@ export async function Hero() {
                 <span className={styles.techLogo} data-tech="sql">SQL</span>
               </div>
               <div
-                className={`${styles.portrait} ${hasPhoto ? styles.hasPhoto : ''}`}
+                className={`${styles.portrait} ${styles.hasPhoto}`}
                 role="img"
                 aria-label={photo('photoAlt')}
               >
-                {hasPhoto ? (
-                  <Image
-                    className={styles.profileImage}
-                    src="/profile.jpg"
-                    alt={photo('photoAlt')}
-                    fill
-                    priority
-                    sizes="(max-width: 767px) 61vw, 17.5rem"
-                  />
-                ) : (
-                  <span className={styles.initials} aria-hidden="true">
-                    <span>MA</span>
-                    <i />
-                  </span>
-                )}
+                <Image
+                  className={styles.profileImage}
+                  src="/profile.jpg"
+                  alt={photo('photoAlt')}
+                  fill
+                  priority
+                  sizes="(max-width: 767px) 61vw, 17.5rem"
+                />
               </div>
             </div>
             <p className={styles.portraitIntro}>{identity.shortIntro}</p>

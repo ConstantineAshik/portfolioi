@@ -7,7 +7,14 @@ import { Contact } from '@/components/contact/Contact';
 import { Hero } from '@/components/hero/Hero';
 import { PortfolioSections } from '@/components/portfolio/PortfolioSections';
 import { SiteEffects } from '@/components/motion/SiteEffects';
-import type { Locale } from '@/i18n/routing';
+import { type Locale, locales } from '@/i18n/routing';
+
+export const dynamic = 'force-static';
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export default async function HomePage({
   params,

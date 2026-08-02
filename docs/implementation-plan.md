@@ -44,7 +44,7 @@ negative space. No cards, no gradients, no glassmorphism.
 1. **Foundation** — Next.js 15 App Router, TypeScript strict, Tailwind v4, fonts, tokens,
    types, `next-intl` locale routing, root layout.
 2. **Data** — `src/config/portfolio.ts` populated from the CV; `content/en.json`,
-   `content/bn.json` for UI strings.
+   `content/en.json` for UI strings.
 3. **Static build** — every section laid out and responsive, no motion.
 4. **Interaction** — nav, mobile menu, accordions, carousel, lightbox, form, locale switch.
 5. **Motion** — GSAP hero timeline, marquees, reveals, pinned sequence, parallax.

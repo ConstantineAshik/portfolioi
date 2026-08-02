@@ -1,19 +1,21 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Download } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 import { identity, navigationItems } from '@/config/portfolio';
+import { SCROLL_EVENT } from '@/components/motion/SiteEffects';
 import { useActiveSection } from '@/hooks/useActiveSection';
 import { useFocusTrap, useScrollLock } from '@/hooks/useFocusTrap';
 
 import styles from './Header.module.css';
-import { LocaleSwitcher } from './LocaleSwitcher';
 import menuStyles from './MobileMenu.module.css';
 import { ThemeToggle } from './ThemeToggle';
 
 const SECTION_IDS = navigationItems.map((item) => item.target);
+const subscribeToDocument = () => () => {};
 
 export function Header() {
   const t = useTranslations('nav');
@@ -21,6 +23,11 @@ export function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setScrolled] = useState(false);
   const [isDocked, setDocked] = useState(false);
+  const portalRoot = useSyncExternalStore(
+    subscribeToDocument,
+    () => document.body,
+    () => null,
+  );
   const menuRef = useRef<HTMLDivElement>(null);
   const anchorTop = useRef(0);
 
@@ -30,30 +37,27 @@ export function Header() {
   useScrollLock(isMenuOpen);
 
   useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 24);
-      setDocked(window.scrollY > anchorTop.current - 12);
+    function onScroll(event: Event) {
+      const scrollY = (event as CustomEvent<{ scrollY: number }>).detail.scrollY;
+      setScrolled(scrollY > 24);
+      setDocked(scrollY > anchorTop.current - 12);
     }
 
     const anchor = document.querySelector<HTMLElement>('[data-nav-anchor]');
     anchorTop.current = anchor
       ? anchor.getBoundingClientRect().top + window.scrollY
       : 0;
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener(SCROLL_EVENT, onScroll);
+    return () => window.removeEventListener(SCROLL_EVENT, onScroll);
   }, []);
 
-  // A viewport that grows past the mobile breakpoint should not leave an
-  // invisible open menu holding focus captive.
   useEffect(() => {
     if (!isMenuOpen) return;
-    const query = window.matchMedia('(min-width: 1280px)');
-    const onChange = (event: MediaQueryListEvent) => {
-      if (event.matches) closeMenu();
+    const onResize = () => {
+      if (window.innerWidth >= 1280) closeMenu();
     };
-    query.addEventListener('change', onChange);
-    return () => query.removeEventListener('change', onChange);
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
   }, [isMenuOpen, closeMenu]);
 
   return (
@@ -120,7 +124,6 @@ export function Header() {
 
           <div className={styles.actions}>
             <ThemeToggle />
-            <LocaleSwitcher />
             <button
               type="button"
               className={styles.menuButton}
@@ -135,9 +138,7 @@ export function Header() {
         <span className={styles.scanBeam} aria-hidden="true" />
       </header>
 
-      {/* Rendered unconditionally with `hidden` so the links exist in the HTML
-          for crawlers and for a no-JS reader using the anchors directly. */}
-      <div
+      {portalRoot ? createPortal(<div
         id="mobile-menu"
         ref={menuRef}
         className={menuStyles.overlay}
@@ -194,7 +195,7 @@ export function Header() {
           <span aria-hidden="true">{'>'} </span>
           {identity.location} — {identity.timezone}
         </p>
-      </div>
+      </div>, portalRoot) : null}
     </>
   );
 }

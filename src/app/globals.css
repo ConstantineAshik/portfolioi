@@ -83,6 +83,7 @@ html {
   /* Anchor targets must clear the fixed header. */
   scroll-padding-top: var(--header-height);
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
 }
 
 body {
@@ -162,6 +163,11 @@ button {
   border: none;
   padding: 0;
   cursor: pointer;
+  touch-action: manipulation;
+}
+
+a {
+  touch-action: manipulation;
 }
 
 .theme-toggle {
@@ -237,6 +243,11 @@ ol {
   transform: translate3d(0, var(--section-drift, 0), 0);
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
+}
+
+.section[id],
+.section h2[id] {
+  scroll-margin-top: calc(var(--header-height) + 1rem);
 }
 
 .section::after {

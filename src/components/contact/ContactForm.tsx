@@ -2,29 +2,34 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
-import { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { type FieldErrors, type UseFormRegister, useForm } from 'react-hook-form';
 
-import { contactSchema, type ContactInput, type ContactResponse } from '@/lib/contact-schema';
+import {
+  contactSchema,
+  type ContactInput,
+  type ContactResponse,
+} from '@/lib/contact-schema';
 import type { ContactFormState } from '@/types';
 
 import styles from './ContactForm.module.css';
 
 const FIELDS = ['name', 'email', 'subject', 'message'] as const;
+type ContactFieldName = (typeof FIELDS)[number];
+const FIELD_NAMES = new Set<string>(FIELDS);
 
 export function ContactForm() {
   const t = useTranslations('contact');
-  const tv = useTranslations('validation');
-
+  const validation = useTranslations('validation');
   const [state, setState] = useState<ContactFormState>('ready');
   const [formError, setFormError] = useState<string | null>(null);
-  const statusRef = useRef<HTMLParagraphElement>(null);
 
   const {
     register,
     handleSubmit,
     reset,
     setError,
+    setFocus,
     formState: { errors, isSubmitting },
   } = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
@@ -32,25 +37,23 @@ export function ContactForm() {
     defaultValues: { name: '', email: '', subject: '', message: '', company: '' },
   });
 
-  /**
-   * Validation messages travel as keys, so translate defensively: an unknown key
-   * must not throw and blank the form.
-   */
-  function translateError(key: string | undefined) {
+  function errorMessage(key: string | undefined) {
     if (!key) return undefined;
     try {
-      return tv(key as Parameters<typeof tv>[0]);
+      return validation(key as Parameters<typeof validation>[0]);
     } catch {
-      return tv('serverError');
+      return validation('serverError');
     }
   }
 
-  async function onSubmit(values: ContactInput) {
-    // `isSubmitting` already blocks the button; this guards programmatic calls.
-    if (state === 'sending') return;
+  function focusFirstError(fieldErrors: FieldErrors<ContactInput>) {
+    const field = FIELDS.find((name) => fieldErrors[name]);
+    if (field) setFocus(field);
+  }
 
-    setState('sending');
+  async function onSubmit(values: ContactInput) {
     setFormError(null);
+    setState('ready');
 
     try {
       const response = await fetch('/api/contact', {
@@ -58,26 +61,21 @@ export function ContactForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
-
       const result = (await response.json().catch(() => null)) as ContactResponse | null;
 
       if (response.ok && result?.ok) {
-        setState('sent');
         reset();
+        setState('sent');
         return;
       }
 
-      // Recoverable failure: keep every entered value so nothing is retyped.
+      let firstServerField: ContactFieldName | undefined;
       if (result && !result.ok) {
-        if (result.fieldErrors) {
-          for (const [field, key] of Object.entries(result.fieldErrors)) {
-            if ((FIELDS as readonly string[]).includes(field)) {
-              setError(field as (typeof FIELDS)[number], {
-                type: 'server',
-                message: key,
-              });
-            }
-          }
+        for (const [field, key] of Object.entries(result.fieldErrors ?? {})) {
+          if (!FIELD_NAMES.has(field)) continue;
+          const name = field as ContactFieldName;
+          firstServerField ??= name;
+          setError(name, { type: 'server', message: key });
         }
         setFormError(result.error);
       } else {
@@ -85,29 +83,18 @@ export function ContactForm() {
       }
 
       setState('error');
+      if (firstServerField) setFocus(firstServerField);
     } catch {
-      // Network failure — the values stay in the form.
       setFormError('serverError');
       setState('error');
     }
   }
 
-  const statusKey =
-    state === 'sending'
-      ? 'statusSending'
-      : state === 'sent'
-        ? 'statusSent'
-        : state === 'error'
-          ? 'statusError'
-          : 'statusReady';
-
   if (state === 'sent') {
     return (
-      <div className={styles.success}>
+      <div className={styles.success} role="status">
         <p className={styles.successLine}>
-          <span className={styles.prompt} aria-hidden="true">
-            ~${' '}
-          </span>
+          <span className={styles.prompt} aria-hidden="true">~$ </span>
           {t('sent')}
         </p>
         <p className={styles.successDetail}>{t('sentDetail')}</p>
@@ -118,61 +105,29 @@ export function ContactForm() {
     );
   }
 
+  const statusKey = isSubmitting
+    ? 'statusSending'
+    : state === 'error'
+      ? 'statusError'
+      : 'statusReady';
+
   return (
-    <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
-      {FIELDS.map((field) => {
-        const message = translateError(errors[field]?.message);
-        const isTextarea = field === 'message';
+    <form
+      className={styles.form}
+      onSubmit={handleSubmit(onSubmit, focusFirstError)}
+      noValidate
+    >
+      {FIELDS.map((field) => (
+        <ContactField
+          key={field}
+          field={field}
+          label={t(`${field}Label`)}
+          placeholder={t(`${field}Placeholder`)}
+          message={errorMessage(errors[field]?.message)}
+          register={register}
+        />
+      ))}
 
-        return (
-          <div key={field} className={styles.field}>
-            <label className={styles.label} htmlFor={`contact-${field}`}>
-              <span className={styles.labelPrompt} aria-hidden="true">
-                {'>'}
-              </span>
-              {t(`${field}Label`)}
-            </label>
-
-            {isTextarea ? (
-              <textarea
-                id={`contact-${field}`}
-                className={styles.textarea}
-                rows={6}
-                placeholder={t(`${field}Placeholder`)}
-                aria-invalid={message ? true : undefined}
-                aria-describedby={message ? `contact-${field}-error` : undefined}
-                {...register(field)}
-              />
-            ) : (
-              <input
-                id={`contact-${field}`}
-                className={styles.input}
-                type={field === 'email' ? 'email' : 'text'}
-                autoComplete={
-                  field === 'name' ? 'name' : field === 'email' ? 'email' : 'off'
-                }
-                placeholder={t(`${field}Placeholder`)}
-                aria-invalid={message ? true : undefined}
-                aria-describedby={message ? `contact-${field}-error` : undefined}
-                {...register(field)}
-              />
-            )}
-
-            {/* Errors are announced as they appear, and marked with a glyph as
-                well as colour. */}
-            {message ? (
-              <p id={`contact-${field}-error`} className={styles.error} role="alert">
-                <span aria-hidden="true">! </span>
-                {message}
-              </p>
-            ) : null}
-          </div>
-        );
-      })}
-
-      {/* Honeypot. Hidden from sighted users via CSS, from assistive tech via
-          aria-hidden, and from autofill via tabIndex -1. A real visitor cannot
-          reach it; a naive bot fills it and gets silently dropped. */}
       <div className={styles.honeypot} aria-hidden="true">
         <label htmlFor="contact-company">{t('companyLabel')}</label>
         <input
@@ -186,14 +141,17 @@ export function ContactForm() {
 
       <div className={styles.footer}>
         <button type="submit" className={styles.submit} disabled={isSubmitting}>
-          {state === 'sending' ? t('sending') : t('send')}
+          {isSubmitting ? t('sending') : t('send')}
           <span className={styles.submitCaret} aria-hidden="true">
-            {state === 'sending' ? '…' : '↵'}
+            {isSubmitting ? '…' : '↵'}
           </span>
         </button>
-
-        <p ref={statusRef} className={styles.status} role="status" aria-live="polite">
-          <span className={styles.statusDot} data-state={state} aria-hidden="true" />
+        <p className={styles.status} role="status" aria-live="polite">
+          <span
+            className={styles.statusDot}
+            data-state={isSubmitting ? 'sending' : state}
+            aria-hidden="true"
+          />
           {t(statusKey)}
         </p>
       </div>
@@ -202,10 +160,59 @@ export function ContactForm() {
         <div className={styles.formError} role="alert">
           <p className={styles.formErrorHeading}>{t('errorHeading')}</p>
           <p className={styles.formErrorDetail}>
-            {formError === 'rateLimited' ? tv('rateLimited') : t('errorDetail')}
+            {formError === 'rateLimited' ? validation('rateLimited') : t('errorDetail')}
           </p>
         </div>
       ) : null}
     </form>
+  );
+}
+
+function ContactField({
+  field,
+  label,
+  message,
+  placeholder,
+  register,
+}: {
+  field: ContactFieldName;
+  label: string;
+  message?: string;
+  placeholder: string;
+  register: UseFormRegister<ContactInput>;
+}) {
+  const id = `contact-${field}`;
+  const describedBy = message ? `${id}-error` : undefined;
+  const shared = {
+    id,
+    placeholder,
+    'aria-invalid': message ? true : undefined,
+    'aria-describedby': describedBy,
+    ...register(field),
+  };
+
+  return (
+    <div className={styles.field}>
+      <label className={styles.label} htmlFor={id}>
+        <span className={styles.labelPrompt} aria-hidden="true">{'>'}</span>
+        {label}
+      </label>
+      {field === 'message' ? (
+        <textarea className={styles.textarea} rows={6} {...shared} />
+      ) : (
+        <input
+          className={styles.input}
+          type={field === 'email' ? 'email' : 'text'}
+          autoComplete={field === 'name' ? 'name' : field === 'email' ? 'email' : 'off'}
+          spellCheck={field === 'email' ? false : undefined}
+          {...shared}
+        />
+      )}
+      {message ? (
+        <p id={describedBy} className={styles.error} role="alert">
+          <span aria-hidden="true">! </span>{message}
+        </p>
+      ) : null}
+    </div>
   );
 }

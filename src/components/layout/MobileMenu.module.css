@@ -10,10 +10,25 @@
   background-color: var(--color-background);
   overflow-y: auto;
   overscroll-behavior: contain;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity .32s var(--ease-out),
+    transform .42s var(--ease-out),
+    display .42s allow-discrete;
 }
 
 .overlay[hidden] {
   display: none;
+  opacity: 0;
+  transform: translateY(-1rem);
+}
+
+@starting-style {
+  .overlay:not([hidden]) {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
 }
 
 @media (min-width: 1280px) {
@@ -68,4 +83,10 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    transition: none;
+  }
 }

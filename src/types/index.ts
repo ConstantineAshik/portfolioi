@@ -34,17 +34,7 @@ export interface Credential {
   description: string;
   /** Verification or paper URL, when one is public. */
   href?: string;
-  image: ImageAsset;
   tags: string[];
-}
-
-export interface ImageAsset {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  /** Used for the blur placeholder and the archive preview background. */
-  dominantColor?: string;
 }
 
 /** Engineering case study. (Brief: `ArtDirectionProject`.) */
@@ -56,17 +46,9 @@ export interface CaseStudy {
   year: string;
   category: string;
   role: string;
-  /** What the work actually involved. (Brief: `services`.) */
-  contributions: string[];
   shortDescription: string;
   fullDescription: string;
   stack: string[];
-  cover: ImageAsset;
-  gallery: ImageAsset[];
-  videoUrl?: string;
-  /** Accent used for this study's detail view. */
-  colorTheme: string;
-  credits: Array<{ role: string; name: string }>;
   externalUrl?: string;
 }
 
@@ -87,9 +69,6 @@ export interface ArchiveEntry {
   /** Scope marker, e.g. "Capstone", "Production". (Brief: `focalLength`.) */
   scope: string;
   year: string;
-  orientation: 'landscape' | 'portrait' | 'square';
-  image: ImageAsset;
-  thumbnail: ImageAsset;
   story?: string;
   repoUrl?: string;
 }
@@ -97,23 +76,6 @@ export interface ArchiveEntry {
 /** Archive category. (Brief: `PhotographyCategory`.) */
 export interface ArchiveCategory {
   slug: string;
-  title: string;
-  description: string;
-  count: number;
-}
-
-/** One frame of the scroll-driven research story. (Brief: `IllustrationProject`.) */
-export interface StoryChapter {
-  id: string;
-  year: string;
-  title: string;
-  description: string;
-  metadata: Array<{ label: string; value: string }>;
-  image: ImageAsset;
-}
-
-export interface Service {
-  index: string;
   title: string;
   description: string;
 }
@@ -133,13 +95,4 @@ export interface SpokenLanguage {
   level: string;
 }
 
-export interface ContactFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  /** Honeypot. Must stay empty; bots fill it. */
-  company?: string;
-}
-
-export type ContactFormState = 'ready' | 'sending' | 'sent' | 'error';
+export type ContactFormState = 'ready' | 'sent' | 'error';

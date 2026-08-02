@@ -10,6 +10,25 @@ export const dynamic = 'force-dynamic';
 
 const MAX_BODY_BYTES = 16 * 1024;
 
+async function readBody(request: Request) {
+  if (!request.body) return '';
+  const reader = request.body.getReader();
+  const decoder = new TextDecoder();
+  let bytes = 0;
+  let body = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) return body + decoder.decode();
+    bytes += value.byteLength;
+    if (bytes > MAX_BODY_BYTES) {
+      await reader.cancel();
+      return null;
+    }
+    body += decoder.decode(value, { stream: true });
+  }
+}
+
 /**
  * Best-effort client identity for rate limiting.
  *
@@ -49,15 +68,23 @@ export async function POST(request: Request) {
     return fail('rateLimited', 429, { retryAfter: limit.retryAfter });
   }
 
-  // Reject oversized payloads before parsing them.
+  if (!request.headers.get('content-type')?.toLowerCase().startsWith('application/json')) {
+    return fail('serverError', 400);
+  }
+
+  // Cheap early rejection. readBody also enforces the real limit for chunked
+  // bodies and incorrect or missing Content-Length values.
   const declaredLength = Number(request.headers.get('content-length') ?? '0');
   if (declaredLength > MAX_BODY_BYTES) {
     return fail('serverError', 413);
   }
 
+  const body = await readBody(request);
+  if (body === null) return fail('serverError', 413);
+
   let payload: unknown;
   try {
-    payload = await request.json();
+    payload = JSON.parse(body);
   } catch {
     return fail('serverError', 400);
   }
@@ -91,7 +118,7 @@ export async function POST(request: Request) {
     if (!result.ok) {
       // The reason is for the operator's logs only.
       console.error('[contact] delivery failed', { reason: result.reason });
-      return fail('serverError', 502);
+      return fail('serverError', result.reason === 'not-configured' ? 503 : 502);
     }
 
     return NextResponse.json({ ok: true } satisfies ContactResponse);

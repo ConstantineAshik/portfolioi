@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
 
 type Theme = 'dark' | 'light';
@@ -24,6 +24,17 @@ function getTheme(): Theme {
 export function ThemeToggle() {
   const t = useTranslations('theme');
   const theme = useSyncExternalStore(subscribe, getTheme, () => 'dark');
+
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(STORAGE_KEY) === 'light') {
+        document.documentElement.dataset.theme = 'light';
+        window.dispatchEvent(new Event(THEME_EVENT));
+      }
+    } catch {
+      // Storage can be unavailable in privacy-restricted browsing contexts.
+    }
+  }, []);
 
   function toggleTheme() {
     const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark';

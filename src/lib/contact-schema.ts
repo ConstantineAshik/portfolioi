@@ -22,7 +22,7 @@ export const contactSchema = z.object({
    * error key — a real bot never reads it, and a human who somehow trips it
    * should not be told how the trap works.
    */
-  company: z.string().max(0, 'serverError').optional().or(z.literal('')),
+  company: z.string().max(200, 'serverError').optional(),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
